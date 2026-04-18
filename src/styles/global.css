@@ -1,70 +1,215 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 
-/* Distill-ish defaults: a warm off-white background, near-black serif body,
-   accent blue used sparingly. Tweak via Tailwind utility classes — these
-   rules just set the global tone. */
+/* ─────────────────────────────────────────────────────────────────────
+   snn·optimization — editorial / academic visual language.
+
+   Aesthetic notes:
+   - Warm paper background, deep ink body, single accent blue.
+   - Display: "Fraunces" (variable, optical-sized serif) for headings.
+   - Body: "Newsreader" (variable serif, generous x-height) for prose.
+   - UI / labels: "IBM Plex Sans" for small caps eyebrows + nav.
+   - Mono: "JetBrains Mono" — already in use, kept.
+   - Subtle paper grain via SVG noise on body.
+   - Code blocks toned to the paper, not stark white.
+   ───────────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/fraunces/v37/6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7iN7hzFUPJH58nib1603gg7S2nfgRYIctxw.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/fraunces/v37/6NUu8FyLNQOQZAnv9ZwYvDiIdE9Ea92uemAk_WBq8U_9v0c2Wa0K7n2_kgxehF1RlbCa1FLbQ_AuyCNfk-87fkDP0w.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Newsreader";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/newsreader/v24/cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438w-NyRZH5IDw.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Newsreader";
+  font-style: italic;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/newsreader/v24/cY9rfjOCX1hbuyalUrK49dLac01HBg2BlIqVPS5lhTHksdH-CzCU_QRUYLAAYg.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/ibmplexsans/v19/zYXgKVElMYYaJe8bpLHnCwDKtdbUFI5NadY.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/ibmplexsans/v19/zYX9KVElMYYaJe8bpLHnCwDKjQ76KItzYqduFw.woff2") format("woff2");
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPVmUsaaDhw.woff2") format("woff2");
+}
 
 :root {
   --color-bg: #fbfaf7;
-  --color-fg: #1a1a1a;
-  --color-muted: #5b5b5b;
+  --color-paper: #f6f1e6;            /* warm tinted card / aside */
+  --color-paper-deep: #ede5d3;
+  --color-fg: #15161a;
+  --color-muted: #565660;
+  --color-soft: #8a8a93;
   --color-accent: #205e96;
-  --color-rule: #e6e2da;
-  --font-serif: "Source Serif Pro", "Iowan Old Style", "Apple Garamond",
-    "Palatino Linotype", "Times New Roman", Georgia, serif;
-  --font-sans: "Inter", "Helvetica Neue", "Arial", system-ui, sans-serif;
+  --color-accent-deep: #163f64;
+  --color-accent-soft: #e3ecf5;
+  --color-rule: #e6e0d2;
+  --color-rule-strong: #c8bfa9;
+
+  --font-display: "Fraunces", "Iowan Old Style", "Apple Garamond",
+    "Palatino Linotype", Georgia, serif;
+  --font-serif: "Newsreader", "Iowan Old Style", "Source Serif Pro",
+    "Palatino Linotype", Georgia, serif;
+  --font-sans: "IBM Plex Sans", "Helvetica Neue", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Menlo", "Consolas", monospace;
+
+  --shadow-card: 0 1px 0 rgba(21, 22, 26, 0.04),
+                 0 8px 24px -16px rgba(21, 22, 26, 0.08);
+  --shadow-card-hover: 0 1px 0 rgba(21, 22, 26, 0.06),
+                       0 18px 40px -20px rgba(32, 94, 150, 0.18);
 }
 
 html {
   background: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--font-serif);
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
+/* Subtle paper grain — fixed so it doesn't shift while scrolling. */
 body {
-  line-height: 1.6;
+  line-height: 1.65;
   font-size: 1.0625rem;
+  font-variation-settings: "opsz" 16;
+  position: relative;
 }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'>\
+<filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/>\
+<feColorMatrix values='0 0 0 0 0.08  0 0 0 0 0.07  0 0 0 0 0.06  0 0 0 0.05 0'/></filter>\
+<rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+}
+body > * { position: relative; z-index: 1; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.25;
+  letter-spacing: -0.012em;
+  line-height: 1.18;
+  color: var(--color-fg);
+  font-variation-settings: "opsz" 36, "SOFT" 30;
 }
+h1 { font-variation-settings: "opsz" 144, "SOFT" 50; }
 
 a {
   color: var(--color-accent);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
-  transition: opacity 120ms ease;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in oklch, var(--color-accent) 40%, transparent);
+  transition: color 120ms ease, text-decoration-color 120ms ease;
 }
-a:hover { opacity: 0.7; }
+a:hover {
+  color: var(--color-accent-deep);
+  text-decoration-color: var(--color-accent);
+}
 
 code, pre, kbd, samp {
   font-family: var(--font-mono);
   font-size: 0.92em;
+  font-variant-ligatures: none;
 }
 
-pre {
-  background: #f1ede4;
-  padding: 1rem 1.25rem;
-  border-radius: 0.5rem;
-  overflow-x: auto;
+/* Inline code — pill shape, warm wash. */
+:not(pre) > code {
+  background: var(--color-paper);
+  padding: 0.08em 0.36em;
+  border-radius: 0.3em;
+  font-size: 0.88em;
   border: 1px solid var(--color-rule);
+  color: var(--color-accent-deep);
+}
+
+/* Code block container.  We wrap each Shiki output in .code-block via
+   the layout so we can place a language badge in the corner. Astro's
+   default markup is <pre class="astro-code …" data-language="python">. */
+pre.astro-code,
+pre {
+  background: #15161a !important;
+  color: #e8e3d6;
+  padding: 1.4rem 1.4rem 1.2rem;
+  border-radius: 0.6rem;
+  overflow-x: auto;
+  border: 1px solid #2b2b35;
+  box-shadow: var(--shadow-card);
+  font-size: 0.86rem;
+  line-height: 1.65;
+  position: relative;
+}
+pre.astro-code code,
+pre code {
+  background: transparent;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* Language badge: read from data-language. The CSS attr() trick inserts
+   it as a small tag in the upper-right of every Shiki code block. */
+pre.astro-code[data-language]::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 0.55rem;
+  right: 0.8rem;
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8a8694;
+  padding: 0.18rem 0.5rem;
+  border-radius: 0.25rem;
+  background: rgba(232, 227, 214, 0.06);
+  pointer-events: none;
 }
 
 blockquote {
   border-left: 3px solid var(--color-accent);
-  padding-left: 1rem;
+  padding: 0.4rem 0 0.4rem 1.2rem;
   color: var(--color-muted);
   font-style: italic;
+  background: linear-gradient(to right, var(--color-accent-soft) 0%, transparent 80%);
 }
 
 hr {
@@ -73,7 +218,71 @@ hr {
   margin: 2.5rem 0;
 }
 
-/* KaTeX rendered math: a touch smaller than body so display equations don't
-   tower over the prose. */
-.katex { font-size: 1.0em; }
-.katex-display > .katex { font-size: 1.05em; }
+/* KaTeX rendered math. */
+.katex { font-size: 1.02em; }
+.katex-display > .katex { font-size: 1.08em; }
+.katex-display {
+  margin: 1.6em 0;
+  padding: 0.4em 0;
+}
+
+/* Selection. */
+::selection { background: var(--color-accent); color: #fff; }
+
+/* Heading anchor links — appear on hover. */
+.prose-content :is(h2, h3, h4) {
+  scroll-margin-top: 6rem;
+  position: relative;
+}
+.prose-content :is(h2, h3, h4) > .anchor,
+.prose-content :is(h2, h3, h4):hover > .anchor {
+  color: var(--color-soft);
+  text-decoration: none;
+  font-weight: 400;
+  margin-left: 0.4rem;
+  font-size: 0.75em;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+.prose-content :is(h2, h3, h4):hover > .anchor { opacity: 1; }
+.prose-content :is(h2, h3, h4) > .anchor:hover { color: var(--color-accent); }
+
+/* Decorative section rule — used between landing-page sections. */
+.flourish {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+}
+.flourish::before,
+.flourish::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-rule-strong), transparent);
+}
+.flourish > svg { color: var(--color-accent); flex-shrink: 0; }
+
+/* Small-caps eyebrow / label. */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* Drop-cap on the lede paragraph. */
+.lede.drop-cap::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.6em;
+  line-height: 0.85;
+  float: left;
+  margin: 0.15rem 0.55rem -0.1rem 0;
+  font-weight: 500;
+  color: var(--color-accent-deep);
+  font-variation-settings: "opsz" 144, "SOFT" 0;
+}

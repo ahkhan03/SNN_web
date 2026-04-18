@@ -1,0 +1,145 @@
+---
+// Inline SVG schematic for the landing hero.
+//
+// Shows a 2-D feasible region (a wedge cut by two constraint lines), with
+// a trajectory drifting from a start point toward an unconstrained
+// optimum that sits *outside* the feasible set. The trajectory bounces
+// off the two active constraints (= spikes) and settles at a corner.
+//
+// Pure CSS animation — no JS. Respects prefers-reduced-motion.
+---
+<figure class="hero-figure" aria-label="Schematic: a constrained quadratic. The trajectory drifts toward the unconstrained optimum, spikes off two active walls, and settles at a corner.">
+  <svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" role="img">
+    <defs>
+      <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e6e0d2" stroke-width="0.6"/>
+      </pattern>
+      <linearGradient id="feasible" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0" stop-color="#205e96" stop-opacity="0.07"/>
+        <stop offset="1" stop-color="#205e96" stop-opacity="0.02"/>
+      </linearGradient>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+              markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#15161a" />
+      </marker>
+    </defs>
+
+    <!-- Background paper with grid. -->
+    <rect width="360" height="320" fill="#fbfaf7" />
+    <rect width="360" height="320" fill="url(#grid)" />
+
+    <!-- Feasible region: polygon clipped by two constraint lines. -->
+    <polygon points="0,320 0,80 130,40 260,160 360,260 360,320"
+             fill="url(#feasible)" />
+
+    <!-- Constraint walls (active set). -->
+    <line x1="0" y1="80" x2="130" y2="40" stroke="#15161a" stroke-width="1.4"/>
+    <line x1="130" y1="40" x2="260" y2="160" stroke="#15161a" stroke-width="1.4"/>
+    <line x1="260" y1="160" x2="360" y2="260" stroke="#15161a" stroke-width="1.4"/>
+
+    <!-- Constraint labels. -->
+    <text x="20" y="68" font-family="JetBrains Mono, monospace" font-size="9"
+          fill="#565660">c₁ᵀx ≤ d₁</text>
+    <text x="200" y="100" font-family="JetBrains Mono, monospace" font-size="9"
+          fill="#565660">c₂ᵀx ≤ d₂</text>
+    <text x="305" y="208" font-family="JetBrains Mono, monospace" font-size="9"
+          fill="#565660">c₃ᵀx ≤ d₃</text>
+
+    <!-- Unconstrained optimum (off-feasible — what gradient pulls toward). -->
+    <g transform="translate(280,40)">
+      <circle r="4" fill="none" stroke="#205e96" stroke-width="1.2" stroke-dasharray="2 2"/>
+      <text x="9" y="3" font-family="Newsreader, serif" font-size="11"
+            fill="#205e96" font-style="italic">x*ᵤ</text>
+    </g>
+
+    <!-- Drift–spike–drift–spike–settle trajectory.
+         Path is one polyline so we can stroke-dasharray-animate it. -->
+    <g class="trajectory">
+      <polyline
+        points="60,260 110,180 130,140 142,72 175,68 210,90 235,118 245,140 245,160 240,170"
+        fill="none"
+        stroke="#15161a"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+    </g>
+
+    <!-- Spike events: dots where the trajectory touches a wall. -->
+    <g class="spike-dots">
+      <circle cx="142" cy="72" r="4.5" fill="#205e96"/>
+      <circle cx="245" cy="155" r="3.5" fill="#205e96"/>
+      <circle cx="240" cy="170" r="3" fill="#205e96"/>
+    </g>
+
+    <!-- Start point. -->
+    <g transform="translate(60,260)">
+      <circle r="3.5" fill="#15161a"/>
+      <text x="-22" y="14" font-family="Newsreader, serif" font-size="11"
+            fill="#15161a" font-style="italic">x₀</text>
+    </g>
+
+    <!-- Settled point. -->
+    <g transform="translate(240,170)">
+      <circle r="5" fill="#fbfaf7" stroke="#15161a" stroke-width="2"/>
+      <circle r="1.8" fill="#15161a"/>
+      <text x="9" y="4" font-family="Newsreader, serif" font-size="11"
+            fill="#15161a" font-style="italic">x*</text>
+    </g>
+
+    <!-- Caption — drift / spike legend. -->
+    <g transform="translate(20,300)" font-family="IBM Plex Sans, sans-serif" font-size="9.5">
+      <line x1="0" y1="-3" x2="22" y2="-3" stroke="#15161a" stroke-width="1.6"/>
+      <text x="28" y="0" fill="#565660">drift (∇f)</text>
+      <circle cx="98" cy="-3" r="3.5" fill="#205e96"/>
+      <text x="106" y="0" fill="#565660">spike (proj.)</text>
+      <circle cx="190" cy="-3" r="4" fill="none" stroke="#205e96" stroke-dasharray="2 2"/>
+      <text x="198" y="0" fill="#565660">x*ᵤ unconstrained</text>
+    </g>
+  </svg>
+</figure>
+
+<style>
+  .hero-figure {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: #fbfaf7;
+    border: 1px solid var(--color-rule);
+  }
+  .hero-figure svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Trace the trajectory in. */
+  .trajectory polyline {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: trace 2400ms ease-out 200ms forwards;
+  }
+  .spike-dots circle {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pop 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  .spike-dots circle:nth-child(1) { animation-delay: 1100ms; }
+  .spike-dots circle:nth-child(2) { animation-delay: 2000ms; }
+  .spike-dots circle:nth-child(3) { animation-delay: 2400ms; }
+
+  @keyframes trace {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes pop {
+    0%   { opacity: 0; transform: scale(0); }
+    60%  { opacity: 1; transform: scale(1.6); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .trajectory polyline { stroke-dashoffset: 0; animation: none; }
+    .spike-dots circle { opacity: 1; animation: none; }
+  }
+</style>

@@ -1,144 +1,277 @@
 ---
 import Base from "../layouts/Base.astro";
+import Flourish from "../components/Flourish.astro";
+import HeroSchematic from "../components/HeroSchematic.astro";
 ---
 
-<Base title="snn — spiking networks as convex optimizers">
-  <article class="max-w-3xl mx-auto">
+<Base title="snn — spiking networks as convex optimizers" width="wide">
+  <div class="max-w-6xl mx-auto">
 
-    <!-- Hero -->
-    <section class="pt-6 pb-16 border-b border-[--color-rule]">
-      <p class="uppercase tracking-widest text-xs text-[--color-accent] mb-4">
-        a friendly tour
-      </p>
-      <h1 class="text-4xl sm:text-5xl leading-tight mb-6">
-        Spiking neural networks <em>are</em> convex optimizers.
-      </h1>
-      <p class="text-lg text-[--color-muted] mb-8 max-w-2xl">
-        A simple population of leaky integrate-and-fire neurons, with the right
-        connectivity, solves a quadratic program. Each spike is a constraint
-        becoming active. Each silence is a gradient step. The page below walks
-        through the idea, the math, and a runnable Python implementation —
-        for students, curious researchers, and anyone who likes when two
-        fields turn out to be the same field.
-      </p>
-      <div class="flex flex-wrap gap-3">
-        <a
-          href="/intro/"
-          class="inline-block px-4 py-2 rounded-md bg-[--color-accent] text-white no-underline text-sm font-medium"
-        >
-          Start with the intuition →
-        </a>
-        <a
-          href="https://github.com/ahkhan03/SNN_opt"
-          class="inline-block px-4 py-2 rounded-md border border-[--color-rule] text-[--color-fg] no-underline text-sm font-medium"
-        >
-          View <code class="bg-transparent">snn_opt</code> on GitHub
-        </a>
+    <!-- ─────── Hero ─────── -->
+    <section class="pt-2 sm:pt-6 pb-12 lg:pb-16 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-16 items-center">
+      <div class="order-2 lg:order-1">
+        <p class="eyebrow mb-5 flex items-center gap-3">
+          <span class="inline-block w-6 h-px bg-[--color-accent] opacity-60"></span>
+          A friendly tour
+          <span class="text-[--color-soft] tracking-normal normal-case font-normal">·</span>
+          <span class="text-[--color-soft] tracking-normal normal-case font-normal italic" style="font-family: var(--font-serif);">v0.1</span>
+        </p>
+        <h1 class="text-[2.6rem] sm:text-[3.4rem] lg:text-[4rem] leading-[0.98] mb-7 -tracking-[0.022em]"
+            style="font-family: var(--font-display); font-variation-settings: 'opsz' 144, 'SOFT' 50; font-weight: 400;">
+          Spiking neural<br/>
+          networks <em class="italic" style="font-variation-settings: 'opsz' 144, 'SOFT' 100;">are</em><br/>
+          <span class="text-[--color-accent]">convex optimizers.</span>
+        </h1>
+        <p class="text-lg text-[--color-muted] mb-9 max-w-xl leading-[1.55]"
+           style="font-variation-settings: 'opsz' 22;">
+          A simple population of leaky integrate-and-fire neurons,
+          with the right connectivity, solves a quadratic program.
+          Each spike is a constraint becoming active. Each silence is
+          a gradient step. The page below walks through the idea, the
+          math, and a runnable Python implementation.
+        </p>
+        <div class="flex flex-wrap gap-3 items-center">
+          <a
+            href="/intro/"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-[--color-fg] text-[--color-bg] no-underline text-sm font-medium hover:bg-[--color-accent] transition-colors"
+            style="font-family: var(--font-sans);"
+          >
+            Start with the intuition
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a
+            href="https://github.com/ahkhan03/SNN_opt"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-[--color-rule-strong] text-[--color-fg] no-underline text-sm font-medium hover:border-[--color-accent] hover:text-[--color-accent] transition-colors"
+            style="font-family: var(--font-sans);"
+          >
+            View <code class="bg-transparent border-0 p-0 text-inherit text-[0.9em]">snn_opt</code> on GitHub
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M3.5 2.5h6v6M9.5 2.5L2.5 9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Tiny meta-strip: lineage / status. -->
+        <dl class="mt-10 grid grid-cols-3 gap-6 max-w-md text-sm" style="font-family: var(--font-sans);">
+          <div>
+            <dt class="text-[--color-soft] text-xs uppercase tracking-widest mb-1">Pkg</dt>
+            <dd class="text-[--color-fg]"><code class="bg-transparent border-0 p-0 text-[0.95em]">snn_opt</code></dd>
+          </div>
+          <div>
+            <dt class="text-[--color-soft] text-xs uppercase tracking-widest mb-1">Deps</dt>
+            <dd class="text-[--color-fg]">NumPy · SciPy</dd>
+          </div>
+          <div>
+            <dt class="text-[--color-soft] text-xs uppercase tracking-widest mb-1">License</dt>
+            <dd class="text-[--color-fg]">Apache-2.0</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="order-1 lg:order-2">
+        <HeroSchematic />
+        <p class="text-xs text-[--color-soft] mt-3 max-w-sm leading-relaxed"
+           style="font-family: var(--font-sans);">
+          A 2-D quadratic with three half-space constraints. The trajectory
+          drifts toward <span class="italic" style="font-family: var(--font-serif);">x*ᵤ</span>,
+          spikes at each active wall, and settles at the constrained
+          optimum.
+        </p>
       </div>
     </section>
 
-    <!-- The idea, in three beats -->
-    <section class="py-16 border-b border-[--color-rule]">
-      <h2 class="text-2xl mb-6">The idea, in three beats</h2>
+    <Flourish />
 
-      <div class="grid sm:grid-cols-3 gap-8">
+    <!-- ─────── The idea, in three beats ─────── -->
+    <section class="py-10">
+      <div class="grid lg:grid-cols-[1fr_3fr] gap-8 mb-10">
         <div>
-          <p class="text-[--color-accent] font-semibold mb-2">1. Drift</p>
-          <p class="text-[--color-muted] text-sm leading-relaxed">
-            Between spikes, each neuron's membrane voltage moves by the
-            gradient of an objective. This is plain gradient descent —
-            dressed up as biology.
-          </p>
+          <p class="eyebrow mb-3">Three beats</p>
+          <h2 class="text-3xl -tracking-[0.014em]"
+              style="font-family: var(--font-display); font-variation-settings: 'opsz' 60; font-weight: 500;">
+            The idea, distilled.
+          </h2>
         </div>
-        <div>
-          <p class="text-[--color-accent] font-semibold mb-2">2. Spike</p>
-          <p class="text-[--color-muted] text-sm leading-relaxed">
-            When the voltage would push the trajectory past a constraint,
-            a spike fires. The spike re-projects the state onto the
-            feasible boundary — a discrete correction.
-          </p>
-        </div>
-        <div>
-          <p class="text-[--color-accent] font-semibold mb-2">3. Settle</p>
-          <p class="text-[--color-muted] text-sm leading-relaxed">
-            The spike train and the drift balance at the constrained
-            optimum. The active spikes encode the active constraint set.
-            The math is exactly that of a primal-dual QP solver.
-          </p>
-        </div>
+        <p class="text-[--color-muted] text-lg leading-[1.55] self-end max-w-xl"
+           style="font-variation-settings: 'opsz' 22;">
+          The whole framework collapses into three repeating moves.
+          Everything else — the convergence proofs, the hardware story,
+          the spike raster — falls out of these.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-px bg-[--color-rule] border border-[--color-rule] rounded-lg overflow-hidden">
+        {[
+          {
+            n: "01",
+            title: "Drift",
+            body: "Between spikes, each neuron's membrane voltage moves by the gradient of an objective. Plain gradient descent — dressed up as biology.",
+          },
+          {
+            n: "02",
+            title: "Spike",
+            body: "When the voltage would push the trajectory past a constraint, a spike fires. The spike re-projects the state onto the feasible boundary — a discrete correction.",
+          },
+          {
+            n: "03",
+            title: "Settle",
+            body: "The spike train and the drift balance at the constrained optimum. Active spikes encode the active constraint set. The math is exactly that of a primal-dual QP solver.",
+          },
+        ].map((beat) => (
+          <div class="bg-[--color-bg] p-7 lg:p-8 group">
+            <div class="flex items-baseline gap-3 mb-4">
+              <span class="font-mono text-xs text-[--color-accent] tabular-nums">{beat.n}</span>
+              <span class="flex-1 h-px bg-[--color-rule]"></span>
+            </div>
+            <h3 class="text-xl mb-3" style="font-family: var(--font-display); font-variation-settings: 'opsz' 36; font-weight: 600;">
+              {beat.title}.
+            </h3>
+            <p class="text-[--color-muted] text-[0.97rem] leading-[1.6]">
+              {beat.body}
+            </p>
+          </div>
+        ))}
       </div>
     </section>
 
-    <!-- The picture -->
-    <section class="py-16 border-b border-[--color-rule]">
-      <h2 class="text-2xl mb-3">The picture</h2>
-      <p class="text-[--color-muted] mb-6">
-        A 4-D quadratic, optimum outside a box constraint. The trajectory
-        bounces against the four "active" faces every iteration; each dot
-        is one projection event.
-      </p>
-      <figure class="rounded-lg overflow-hidden border border-[--color-rule] bg-white">
+    <Flourish />
+
+    <!-- ─────── The picture ─────── -->
+    <section class="py-10">
+      <div class="grid lg:grid-cols-[1fr_3fr] gap-8 mb-10">
+        <div>
+          <p class="eyebrow mb-3">A picture</p>
+          <h2 class="text-3xl -tracking-[0.014em]"
+              style="font-family: var(--font-display); font-variation-settings: 'opsz' 60; font-weight: 500;">
+            What it<br/>looks like.
+          </h2>
+        </div>
+        <p class="text-[--color-muted] text-lg leading-[1.55] self-end max-w-xl"
+           style="font-variation-settings: 'opsz' 22;">
+          A 4-D quadratic, optimum outside a box constraint. The trajectory
+          bounces against the four "active" faces every iteration; each
+          dot is one projection event. Below it: the objective gap
+          collapsing on the same iteration axis.
+        </p>
+      </div>
+      <figure class="rounded-lg overflow-hidden border border-[--color-rule] bg-white shadow-[var(--shadow-card)]">
         <img
           src="/figures/02_spike_raster.png"
           alt="Projection-spike raster on a 4-D box-constrained QP"
           class="w-full h-auto"
         />
-        <figcaption class="px-4 py-3 text-xs text-[--color-muted] border-t border-[--color-rule]">
-          Top: spike raster, one row per inequality, dot size ∝ projection
-          magnitude. Bottom: objective gap on the same iteration axis.
-          Generated by <code>benchmarks/02_spike_raster.py</code>.
+        <figcaption class="px-5 py-3 text-xs text-[--color-muted] border-t border-[--color-rule] bg-[--color-paper]"
+                    style="font-family: var(--font-sans);">
+          <strong class="text-[--color-fg] font-semibold">Top:</strong> spike raster, one row per inequality, dot size ∝ projection magnitude.
+          <strong class="text-[--color-fg] font-semibold ml-1">Bottom:</strong> objective gap on the same iteration axis.
+          Generated by <code class="text-[--color-fg]">benchmarks/02_spike_raster.py</code>.
         </figcaption>
       </figure>
     </section>
 
-    <!-- What's here -->
-    <section class="py-16 border-b border-[--color-rule]">
-      <h2 class="text-2xl mb-6">What you'll find here</h2>
-      <ul class="space-y-4">
-        <li>
-          <a href="/intro/" class="font-medium">Intro</a>
-          <span class="text-[--color-muted]"> — the spiking idea
-          explained from scratch, with no prior neuromorphic background
-          required.</span>
-        </li>
-        <li>
-          <a href="/tutorials/" class="font-medium">Tutorials</a>
-          <span class="text-[--color-muted]"> — hands-on walkthroughs:
-          formulating SVMs, ridge regression, PCA and a few control
-          problems as QPs you can drop into the solver.</span>
-        </li>
-        <li>
-          <a href="/papers/" class="font-medium">Papers</a>
-          <span class="text-[--color-muted]"> — the published work that
-          uses this framework, with abstracts and DOI links.</span>
-        </li>
-        <li>
-          <a href="https://github.com/ahkhan03/SNN_opt" class="font-medium">
-            <code>snn_opt</code> on GitHub
-          </a>
-          <span class="text-[--color-muted]"> — the canonical Python
-          implementation: solver, examples, benchmarks, full mathematical
-          writeup.</span>
-        </li>
+    <Flourish />
+
+    <!-- ─────── What you'll find here ─────── -->
+    <section class="py-10">
+      <div class="grid lg:grid-cols-[1fr_3fr] gap-8 mb-10">
+        <div>
+          <p class="eyebrow mb-3">Map</p>
+          <h2 class="text-3xl -tracking-[0.014em]"
+              style="font-family: var(--font-display); font-variation-settings: 'opsz' 60; font-weight: 500;">
+            What you'll<br/>find here.
+          </h2>
+        </div>
+        <p class="text-[--color-muted] text-lg leading-[1.55] self-end max-w-xl"
+           style="font-variation-settings: 'opsz' 22;">
+          Four entry points. Pick whichever matches your appetite — the
+          intuition essay, the hands-on tutorials, the published papers,
+          or the source code itself.
+        </p>
+      </div>
+
+      <ul class="grid sm:grid-cols-2 gap-4 not-prose list-none ml-0">
+        {[
+          {
+            href: "/intro/",
+            label: "Intro",
+            kicker: "essay · 8 min",
+            body: "The spiking idea explained from scratch, with no prior neuromorphic background required.",
+          },
+          {
+            href: "/tutorials/",
+            label: "Tutorials",
+            kicker: "hands-on",
+            body: "Walkthroughs: formulating SVMs, ridge regression, PCA and a few control problems as QPs you can drop into the solver.",
+          },
+          {
+            href: "/papers/",
+            label: "Papers",
+            kicker: "peer-reviewed",
+            body: "The published work that uses this framework, with abstracts and DOI links.",
+          },
+          {
+            href: "https://github.com/ahkhan03/SNN_opt",
+            label: "snn_opt repo",
+            kicker: "source · Apache-2.0",
+            body: "Canonical Python implementation: solver, examples, benchmarks, full mathematical writeup.",
+            external: true,
+          },
+        ].map((c) => (
+          <li>
+            <a
+              href={c.href}
+              class="block p-6 bg-[--color-bg] border border-[--color-rule] rounded-lg no-underline relative overflow-hidden group transition-all duration-200 hover:border-[--color-accent] hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)]"
+            >
+              <span class="absolute left-0 top-0 bottom-0 w-1 bg-[--color-accent] origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-300"></span>
+              <div class="flex items-start justify-between gap-4 mb-3">
+                <span class="text-xl text-[--color-fg]" style="font-family: var(--font-display); font-variation-settings: 'opsz' 36; font-weight: 600;">
+                  {c.label}
+                  {c.external ? (
+                    <svg class="inline-block ml-1 -translate-y-0.5" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                      <path d="M3.5 2.5h6v6M9.5 2.5L2.5 9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                  ) : null}
+                </span>
+                <span class="text-[0.65rem] uppercase tracking-widest text-[--color-soft] mt-1 shrink-0" style="font-family: var(--font-sans);">
+                  {c.kicker}
+                </span>
+              </div>
+              <p class="text-[--color-muted] text-sm leading-relaxed mb-0">
+                {c.body}
+              </p>
+            </a>
+          </li>
+        ))}
       </ul>
     </section>
 
-    <!-- For whom -->
-    <section class="py-16">
-      <h2 class="text-2xl mb-4">Who this is for</h2>
-      <p class="text-[--color-muted] mb-3">
-        Students starting a thesis on neuromorphic methods. Researchers
-        from optimization or control who heard "spiking networks" and
-        weren't sure what to make of it. Anyone who finds beauty in
-        connections between fields that look unrelated until they don't.
-      </p>
-      <p class="text-[--color-muted]">
-        If you want the formal version: head to the
-        <a href="https://github.com/ahkhan03/SNN_opt"><code>snn_opt</code> repository</a>
-        — it has the full theory document, an academic-style README, and
-        a benchmark suite. The pages here are the <em>friendly</em>
-        version of that material.
-      </p>
+    <Flourish />
+
+    <!-- ─────── For whom ─────── -->
+    <section class="py-10 lg:py-16">
+      <div class="max-w-3xl">
+        <p class="eyebrow mb-4">For whom</p>
+        <h2 class="text-3xl mb-6 -tracking-[0.014em]"
+            style="font-family: var(--font-display); font-variation-settings: 'opsz' 60; font-weight: 500;">
+          Who this is for.
+        </h2>
+        <p class="text-[--color-fg] text-lg mb-4 leading-[1.6]">
+          Students starting a thesis on neuromorphic methods. Researchers
+          from optimization or control who heard "spiking networks" and
+          weren't sure what to make of it. Anyone who finds beauty in
+          connections between fields that look unrelated until they don't.
+        </p>
+        <p class="text-[--color-muted] leading-[1.65]">
+          If you want the formal version: head to the
+          <a href="https://github.com/ahkhan03/SNN_opt"><code>snn_opt</code> repository</a>
+          — it has the full theory document, an academic-style README, and
+          a benchmark suite. The pages here are the
+          <em>friendly</em> version of the same material.
+        </p>
+      </div>
     </section>
-  </article>
+
+  </div>
 </Base>

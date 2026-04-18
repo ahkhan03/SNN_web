@@ -1,0 +1,257 @@
+---
+import Base from "./Base.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  eyebrow?: string;
+  heading?: string;
+  lede?: string;
+  /** Show a sticky TOC on xl+ screens (extracted client-side from h2s). */
+  toc?: boolean;
+}
+
+const {
+  title,
+  description,
+  eyebrow,
+  heading,
+  lede,
+  toc = true,
+} = Astro.props;
+---
+
+<Base title={title} description={description} width="wide">
+  <div class="max-w-6xl mx-auto xl:grid xl:grid-cols-[minmax(0,1fr)_14rem] xl:gap-12">
+    <article class="max-w-[42rem] mx-auto xl:mx-0 xl:max-w-none">
+      {eyebrow && (
+        <p class="eyebrow mb-5 mt-2 flex items-center gap-3">
+          <span class="inline-block w-6 h-px bg-[--color-accent] opacity-60"></span>
+          {eyebrow}
+        </p>
+      )}
+      {heading && (
+        <h1 class="text-[2.4rem] sm:text-[3rem] leading-[1.05] mb-6 -tracking-[0.018em]"
+            style="font-variation-settings: 'opsz' 144, 'SOFT' 30; font-weight: 500;">
+          {heading}
+        </h1>
+      )}
+      {lede && (
+        <p class="lede text-xl text-[--color-muted] mb-12 max-w-2xl leading-[1.5]"
+           style="font-variation-settings: 'opsz' 24;">
+          {lede}
+        </p>
+      )}
+
+      <div class="prose-content">
+        <slot />
+      </div>
+    </article>
+
+    {toc && (
+      <aside class="hidden xl:block">
+        <div class="sticky top-24 pt-1">
+          <p class="eyebrow mb-3 text-[--color-soft]">On this page</p>
+          <nav id="toc" class="text-sm leading-snug" style="font-family: var(--font-sans);">
+            <!-- Filled by inline script below from .prose-content h2 nodes. -->
+          </nav>
+        </div>
+      </aside>
+    )}
+  </div>
+</Base>
+
+<script is:inline>
+  // Build TOC from h2 elements inside .prose-content. Also wrap each
+  // heading in an anchor link that reveals on hover (CSS handles fade).
+  (() => {
+    const article = document.querySelector(".prose-content");
+    if (!article) return;
+
+    const headings = article.querySelectorAll("h2[id]");
+    const toc = document.getElementById("toc");
+
+    if (toc && headings.length > 1) {
+      const ul = document.createElement("ul");
+      ul.className = "space-y-2 border-l border-[--color-rule] pl-3";
+      headings.forEach((h) => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = "#" + h.id;
+        a.textContent = h.textContent.replace(/\s*#\s*$/, "");
+        a.className =
+          "no-underline text-[--color-muted] hover:text-[--color-accent] block py-0.5 toc-link";
+        a.dataset.target = h.id;
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+      toc.appendChild(ul);
+
+      // Scroll-spy: highlight the current section.
+      const links = toc.querySelectorAll(".toc-link");
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              links.forEach((l) =>
+                l.classList.toggle(
+                  "toc-active",
+                  l.dataset.target === e.target.id,
+                ),
+              );
+            }
+          });
+        },
+        { rootMargin: "-15% 0px -70% 0px" },
+      );
+      headings.forEach((h) => obs.observe(h));
+    }
+
+    // Attach hover-anchor links to h2/h3/h4 inside the prose.
+    article
+      .querySelectorAll("h2[id], h3[id], h4[id]")
+      .forEach((h) => {
+        const a = document.createElement("a");
+        a.href = "#" + h.id;
+        a.className = "anchor";
+        a.textContent = "#";
+        a.setAttribute("aria-label", "Link to this section");
+        h.appendChild(a);
+      });
+  })();
+</script>
+
+<style is:global>
+  /* Long-form prose styling — applied to anything inside .prose-content. */
+  .prose-content > * + * { margin-top: 1.15em; }
+  .prose-content > p + p { margin-top: 1.05em; }
+
+  .prose-content h2 {
+    margin-top: 3em;
+    margin-bottom: 0.6em;
+    font-size: 1.65rem;
+    padding-bottom: 0.4rem;
+    font-variation-settings: "opsz" 60, "SOFT" 20;
+    font-weight: 500;
+    position: relative;
+  }
+  .prose-content h2::before {
+    content: "";
+    position: absolute;
+    left: -1.2rem;
+    top: 0.55em;
+    width: 0.45rem;
+    height: 0.45rem;
+    background: var(--color-accent);
+    border-radius: 50%;
+    opacity: 0.7;
+  }
+  @media (max-width: 640px) {
+    .prose-content h2::before { display: none; }
+  }
+  .prose-content h3 {
+    margin-top: 2em;
+    font-size: 1.22rem;
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .prose-content p {
+    color: var(--color-fg);
+  }
+  .prose-content strong { font-weight: 700; color: var(--color-fg); }
+  .prose-content em { font-style: italic; }
+
+  .prose-content ul:not(.not-prose):not(.list-none),
+  .prose-content ol:not(.not-prose):not(.list-none) {
+    margin-left: 1.5rem;
+    margin-top: 1.05em;
+  }
+  .prose-content ul:not(.not-prose):not(.list-none) { list-style: none; }
+  .prose-content ul:not(.not-prose):not(.list-none) > li { position: relative; }
+  .prose-content ul:not(.not-prose):not(.list-none) > li::before {
+    content: "";
+    position: absolute;
+    left: -1rem;
+    top: 0.7em;
+    width: 0.36rem;
+    height: 0.36rem;
+    background: var(--color-accent);
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  .prose-content ol:not(.not-prose):not(.list-none) { list-style: decimal; }
+  .prose-content ol:not(.not-prose):not(.list-none) > li::marker {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  .prose-content :is(ul, ol):not(.not-prose):not(.list-none) li + li {
+    margin-top: 0.5em;
+  }
+  .prose-content :is(ul, ol):not(.not-prose):not(.list-none) li > p {
+    margin: 0.3em 0;
+  }
+
+  .prose-content figure {
+    margin: 2.4em 0;
+    border: 1px solid var(--color-rule);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: white;
+    box-shadow: var(--shadow-card);
+  }
+  .prose-content figure img { display: block; width: 100%; }
+  .prose-content figcaption {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--color-rule);
+    font-size: 0.85em;
+    color: var(--color-muted);
+    background: var(--color-paper);
+    font-family: var(--font-sans);
+  }
+  .prose-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.8em 0;
+    font-size: 0.95em;
+  }
+  .prose-content th,
+  .prose-content td {
+    border-bottom: 1px solid var(--color-rule);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+  }
+  .prose-content th {
+    background: var(--color-paper);
+    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .prose-content .katex-display {
+    margin: 1.7em 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.4em 0;
+  }
+
+  /* Drop-cap on the FIRST paragraph of the prose content. */
+  .prose-content > p:first-of-type::first-letter {
+    font-family: var(--font-display);
+    font-size: 3.4em;
+    line-height: 0.85;
+    float: left;
+    margin: 0.18rem 0.55rem -0.1rem 0;
+    font-weight: 500;
+    color: var(--color-accent-deep);
+    font-variation-settings: "opsz" 144, "SOFT" 0;
+  }
+
+  /* TOC active link. */
+  .toc-active {
+    color: var(--color-accent) !important;
+    border-left: 2px solid var(--color-accent);
+    margin-left: -14px;
+    padding-left: 12px;
+  }
+</style>

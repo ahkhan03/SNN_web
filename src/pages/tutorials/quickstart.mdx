@@ -1,0 +1,78 @@
+---
+layout: ../../layouts/Prose.astro
+title: "Quickstart — snn_opt"
+description: "Install snn_opt, solve your first QP in five lines of Python."
+eyebrow: "Tutorial 01 · 5 min"
+heading: "Quickstart."
+lede: "From `pip install` to a solved QP in under five minutes. No prior background with the framework needed."
+---
+
+## Install
+
+`snn_opt` is a small package — only NumPy and SciPy are required.
+
+```bash
+git clone https://github.com/ahkhan03/SNN_opt.git
+cd SNN_opt
+pip install -e .                  # core
+pip install -e ".[examples]"      # also matplotlib, for the figures
+```
+
+You can also use it without installing — every script in the repo bootstraps `src/` into `sys.path` automatically.
+
+## Your first QP
+
+We'll solve the smallest QP that does anything interesting:
+
+$$
+\min_{x \in \mathbb{R}^2}\ \tfrac{1}{2}\|x\|^2 \quad\text{s.t.}\quad x_1 + 2x_2 \le 1.
+$$
+
+Without the constraint, the optimum is the origin and the trajectory is uneventful. The constraint cuts off a half-plane, and the solver has to figure out that the optimum sits on the line.
+
+```python
+import numpy as np
+from snn_opt import solve_qp
+
+# Hessian, linear cost, constraint matrix, constraint offset.
+A  = np.eye(2)
+b  = np.zeros(2)
+C  = np.array([[1.0, 2.0]])
+d  = np.array([-1.0])
+x0 = np.array([1.0, 1.0])      # starts feasible
+
+result = solve_qp(A, b, C, d, x0, max_iterations=1000)
+
+print(result.summary())
+print("x* =", result.final_x)
+print("f* =", result.final_objective)
+```
+
+Run it. You should see an answer very close to $x^\star = (0, 0)$ with `f* ≈ 0`, plus a one-line-per-stat summary including the iteration count and the number of projection events.
+
+## What the result tells you
+
+`SolverResult` is a dataclass with everything the solver knows about the run, not just the final answer:
+
+```python
+result.final_x                # the solution
+result.final_objective        # f(x*)
+result.converged              # bool
+result.convergence_reason     # which criterion fired
+result.iterations_used        # how many Euler steps
+result.n_projections          # how many constraint corrections
+result.t, result.X            # full trajectory: time, state
+result.objective_values       # f(x_t) per iteration
+result.constraint_violations  # max violation per iteration
+result.spike_times            # iterations at which a spike fired
+result.spike_constraints      # which constraint(s) fired each time
+result.spike_norms            # how big each spike was
+```
+
+The last four fields are the raw material for the *spike raster* you'll see throughout this site — they're how you learn what your solver is doing.
+
+## Next
+
+- [**An SVM is a QP**](/tutorials/svm-as-qp) — turn a real machine-learning problem into something `solve_qp` can take.
+- [**Reading the spike raster**](/tutorials/spike-raster) — interpret the spike-time outputs above as a diagnostic plot.
+- See [`examples/`](https://github.com/ahkhan03/SNN_opt/tree/main/examples) in the repo for nine more worked QPs — 3-D polytopes, infeasible recovery, equality constraints, warm starting, and a full SVM.

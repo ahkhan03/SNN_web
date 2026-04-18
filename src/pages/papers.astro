@@ -1,0 +1,97 @@
+---
+import Prose from "../layouts/Prose.astro";
+
+const papers = [
+  {
+    title: "Portfolio Optimization: A Neurodynamic Approach Based on Spiking Neural Networks",
+    authors: "A. H. Khan, A. M. Mohammed, S. Li",
+    venue: "Biomimetics 10(12):808",
+    year: 2025,
+    doi: "10.3390/biomimetics10120808",
+    summary:
+      "Recasts the cardinality-constrained portfolio-selection problem as a constrained quadratic program and solves it with the spiking dynamics implemented in snn_opt. Demonstrates that SNN solutions match conventional convex solvers within numerical tolerance while exposing per-asset constraint activations as spike events — a diagnostic that classical solvers don't provide.",
+    tag: "Application",
+  },
+  {
+    title: "Spiking Neural Networks: A Comprehensive Survey of Training Methodologies, Hardware Implementations and Applications",
+    authors: "A. H. Khan et al.",
+    venue: "Artificial Intelligence Science and Engineering",
+    year: 2025,
+    doi: "10.23919/AISE.2025.000013",
+    summary:
+      "Broader survey of SNN training methodologies and hardware platforms. Useful background reading for anyone entering the area; provides the wider context within which the SNN/QP equivalence sits.",
+    tag: "Survey",
+  },
+];
+---
+
+<Prose
+  title="Papers — published work using snn_opt"
+  description="Peer-reviewed publications that use or describe the snn_opt framework."
+  eyebrow="Papers"
+  heading="Published work."
+  lede="Peer-reviewed work that uses the snn_opt framework, or provides background on the spiking-network methods underneath it. The list grows as additional applications reach publication."
+  toc={false}
+>
+  <ul class="not-prose space-y-6 list-none ml-0 mt-2">
+    {papers.map((p, i) => (
+      <li>
+        <article
+          class="group relative grid sm:grid-cols-[7rem_1fr] gap-x-6 gap-y-3 p-6 sm:p-7 bg-[--color-bg] border border-[--color-rule] rounded-lg overflow-hidden transition-all duration-200 hover:border-[--color-accent] hover:shadow-[var(--shadow-card)]"
+        >
+          <span class="absolute left-0 top-0 bottom-0 w-[3px] bg-[--color-accent] origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-300"></span>
+
+          <div class="flex sm:flex-col sm:items-start gap-4 sm:gap-2 sm:border-r sm:border-[--color-rule] sm:pr-6">
+            <span class="font-mono tabular-nums text-2xl text-[--color-fg]"
+                  style="font-family: var(--font-display); font-variation-settings: 'opsz' 60; font-weight: 500;">
+              {p.year}
+            </span>
+            <span class="inline-block self-start text-[0.62rem] uppercase tracking-widest px-2 py-0.5 rounded-sm bg-[--color-accent-soft] text-[--color-accent-deep] font-semibold"
+                  style="font-family: var(--font-sans);">
+              {p.tag}
+            </span>
+            <span class="text-xs text-[--color-soft] sm:mt-2 italic">
+              {p.venue}
+            </span>
+          </div>
+
+          <div>
+            <h3 class="text-xl mb-2 leading-snug -tracking-[0.01em]"
+                style="font-family: var(--font-display); font-variation-settings: 'opsz' 36, 'SOFT' 20; font-weight: 500;">
+              <a href={`https://doi.org/${p.doi}`} class="no-underline text-[--color-fg] hover:text-[--color-accent] transition-colors">
+                {p.title}
+              </a>
+            </h3>
+            <p class="text-sm text-[--color-muted] mb-3 italic">{p.authors}</p>
+            <p class="text-[--color-fg] leading-[1.6] text-[0.97rem] mb-4">{p.summary}</p>
+            <p class="text-xs" style="font-family: var(--font-sans);">
+              <a href={`https://doi.org/${p.doi}`} class="text-[--color-accent] no-underline hover:underline inline-flex items-center gap-1.5">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M3.5 2.5h6v6M9.5 2.5L2.5 9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+                doi:{p.doi}
+              </a>
+            </p>
+          </div>
+        </article>
+      </li>
+    ))}
+  </ul>
+
+  <h2>In preparation</h2>
+  <p>
+    Additional applications of the framework — covering further classical
+    machine-learning reductions and control problems — are at various
+    stages of preparation and review. Entries will be added here as they
+    appear in print.
+  </p>
+
+  <h2>Citing snn_opt</h2>
+  <p>
+    If <code>snn_opt</code> plays a role in your research or teaching,
+    please cite the software via the
+    <a href="https://github.com/ahkhan03/SNN_opt/blob/main/CITATION.cff">
+    <code>CITATION.cff</code></a> entry at the repository root, alongside
+    the relevant paper above when applicable.
+  </p>
+</Prose>

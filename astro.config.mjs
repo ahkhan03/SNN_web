@@ -13,6 +13,16 @@ export default defineConfig({
       rehypePlugins: [rehypeKatex],
     }),
   ],
+  markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
+    shikiConfig: {
+      // Light/dark dual themes — Shiki injects CSS vars so the page can
+      // pick. We're committing to a single dark code theme for consistency.
+      theme: 'github-dark-dimmed',
+      wrap: false,
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

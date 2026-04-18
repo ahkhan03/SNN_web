@@ -1,0 +1,82 @@
+---
+import Prose from "../../layouts/Prose.astro";
+
+const tutorials = [
+  {
+    href: "/tutorials/quickstart",
+    title: "Quickstart",
+    desc: "Install snn_opt, solve your first 2-D QP, read off the result. Five lines of Python.",
+    minutes: 5,
+    level: "any",
+    n: "01",
+  },
+  {
+    href: "/tutorials/svm-as-qp",
+    title: "An SVM is a QP",
+    desc: "Turn a textbook support-vector-machine dual into a problem the solver can take, end to end. The bridge between classical ML and snn_opt.",
+    minutes: 15,
+    level: "intermediate",
+    n: "02",
+  },
+  {
+    href: "/tutorials/spike-raster",
+    title: "Reading the spike raster",
+    desc: "What the dots mean. What they tell you about your problem. What to look for when something is wrong.",
+    minutes: 10,
+    level: "intermediate",
+    n: "03",
+  },
+];
+---
+
+<Prose
+  title="Tutorials"
+  description="Hands-on walkthroughs of the snn_opt framework — from a five-line quickstart to formulating classical ML problems."
+  eyebrow="Tutorials"
+  heading="Hands-on tutorials."
+  lede="A growing set of walkthroughs. Pick one based on what you want next: get something running, see how a classical ML problem becomes a QP, or learn to debug from the spike raster."
+  toc={false}
+>
+  <ol class="not-prose space-y-4 list-none ml-0 mt-4">
+    {tutorials.map((t) => (
+      <li>
+        <a
+          href={t.href}
+          class="group relative grid grid-cols-[3.5rem_1fr_auto] items-start gap-5 p-5 sm:p-6 bg-[--color-bg] border border-[--color-rule] rounded-lg no-underline overflow-hidden transition-all duration-200 hover:border-[--color-accent] hover:-translate-y-0.5 hover:shadow-[var(--shadow-card)]"
+        >
+          <span class="absolute left-0 top-0 bottom-0 w-[3px] bg-[--color-accent] origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-300"></span>
+          <span
+            class="font-mono tabular-nums text-2xl text-[--color-accent] tracking-tight pt-0.5"
+            style="font-family: var(--font-display); font-variation-settings: 'opsz' 60; font-weight: 500;"
+          >
+            {t.n}
+          </span>
+          <div>
+            <div class="text-xl text-[--color-fg] mb-1.5 leading-tight"
+                 style="font-family: var(--font-display); font-variation-settings: 'opsz' 36, 'SOFT' 30; font-weight: 600;">
+              {t.title}
+            </div>
+            <p class="text-[--color-muted] text-[0.97rem] leading-relaxed mb-0">{t.desc}</p>
+          </div>
+          <div class="flex flex-col items-end gap-1 pt-1.5 text-xs text-[--color-soft] tabular-nums shrink-0"
+               style="font-family: var(--font-sans);">
+            <span>~{t.minutes} min</span>
+            <span class="uppercase tracking-widest text-[0.62rem]">{t.level}</span>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <h2>What's coming</h2>
+  <ul>
+    <li><strong>Receding-horizon control</strong> — using warm starts to make MPC fast.</li>
+    <li><strong>Sphere-constrained problems</strong> — what changes when the constraint set is non-convex (the PCA case).</li>
+    <li><strong>From CVXPY to snn_opt</strong> — translating a problem expressed in a modeling language into the explicit `(A, b, C, d)` form.</li>
+  </ul>
+  <p>
+    Suggestions for tutorials are welcome — open an issue on
+    <a href="https://github.com/ahkhan03/SNN_opt/issues">GitHub</a> with
+    what you'd like to see covered.
+  </p>
+</Prose>
