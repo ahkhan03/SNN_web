@@ -1,0 +1,79 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+/* Distill-ish defaults: a warm off-white background, near-black serif body,
+   accent blue used sparingly. Tweak via Tailwind utility classes — these
+   rules just set the global tone. */
+
+:root {
+  --color-bg: #fbfaf7;
+  --color-fg: #1a1a1a;
+  --color-muted: #5b5b5b;
+  --color-accent: #205e96;
+  --color-rule: #e6e2da;
+  --font-serif: "Source Serif Pro", "Iowan Old Style", "Apple Garamond",
+    "Palatino Linotype", "Times New Roman", Georgia, serif;
+  --font-sans: "Inter", "Helvetica Neue", "Arial", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Menlo", "Consolas", monospace;
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-serif);
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  line-height: 1.6;
+  font-size: 1.0625rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: opacity 120ms ease;
+}
+a:hover { opacity: 0.7; }
+
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+pre {
+  background: #f1ede4;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  border: 1px solid var(--color-rule);
+}
+
+blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1rem;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-rule);
+  margin: 2.5rem 0;
+}
+
+/* KaTeX rendered math: a touch smaller than body so display equations don't
+   tower over the prose. */
+.katex { font-size: 1.0em; }
+.katex-display > .katex { font-size: 1.05em; }

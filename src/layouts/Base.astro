@@ -1,0 +1,60 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "snn — spiking networks as convex optimizers",
+  description = "A friendly tour of the spiking-neural-network / convex-optimization equivalence, with code, math, and worked examples for students and researchers.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / social -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url.href} />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="px-6 sm:px-10 py-6 border-b border-[--color-rule] bg-[--color-bg]/80 backdrop-blur sticky top-0 z-10">
+      <nav class="max-w-5xl mx-auto flex items-center justify-between">
+        <a href="/" class="font-semibold text-lg no-underline text-[--color-fg]">
+          <span class="text-[--color-accent]">snn</span>·optimization
+        </a>
+        <ul class="flex gap-6 text-sm">
+          <li><a href="/intro/" class="no-underline text-[--color-muted] hover:text-[--color-fg]">Intro</a></li>
+          <li><a href="/tutorials/" class="no-underline text-[--color-muted] hover:text-[--color-fg]">Tutorials</a></li>
+          <li><a href="/papers/" class="no-underline text-[--color-muted] hover:text-[--color-fg]">Papers</a></li>
+          <li><a href="https://github.com/ahkhan03/SNN_opt" class="no-underline text-[--color-muted] hover:text-[--color-fg]">GitHub ↗</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="flex-1 px-6 sm:px-10 py-12">
+      <slot />
+    </main>
+
+    <footer class="px-6 sm:px-10 py-10 border-t border-[--color-rule] text-sm text-[--color-muted]">
+      <div class="max-w-5xl mx-auto flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+        <span>© 2026 Ameer Hamza Khan · School of AI, Taizhou University</span>
+        <div class="flex gap-6">
+          <a href="https://github.com/ahkhan03/SNN_opt" class="no-underline">snn_opt repository</a>
+          <a href="https://ahkhan.me" class="no-underline">ahkhan.me</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
