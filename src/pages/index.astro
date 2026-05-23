@@ -53,15 +53,15 @@ import HeroSchematic from "../components/HeroSchematic.astro";
           </a>
         </div>
 
-        <!-- Tiny meta-strip: lineage / status. -->
+        <!-- Tiny meta-strip: install / backends / lineage. -->
         <dl class="mt-10 grid grid-cols-3 gap-6 max-w-md text-sm" style="font-family: var(--font-sans);">
           <div>
-            <dt class="text-[--color-soft] text-xs uppercase tracking-widest mb-1">Pkg</dt>
-            <dd class="text-[--color-fg]"><code class="bg-transparent border-0 p-0 text-[0.95em]">snn_opt</code></dd>
+            <dt class="text-[--color-soft] text-xs uppercase tracking-widest mb-1">Install</dt>
+            <dd class="text-[--color-fg]"><code class="bg-transparent border-0 p-0 text-[0.95em]">pip install snn-opt</code></dd>
           </div>
           <div>
-            <dt class="text-[--color-soft] text-xs uppercase tracking-widest mb-1">Deps</dt>
-            <dd class="text-[--color-fg]">NumPy · SciPy</dd>
+            <dt class="text-[--color-soft] text-xs uppercase tracking-widest mb-1">Backends</dt>
+            <dd class="text-[--color-fg]">Python · C++</dd>
           </div>
           <div>
             <dt class="text-[--color-soft] text-xs uppercase tracking-widest mb-1">License</dt>
@@ -215,7 +215,7 @@ import HeroSchematic from "../components/HeroSchematic.astro";
             href: "https://github.com/ahkhan03/SNN_opt",
             label: "snn_opt repo",
             kicker: "source · Apache-2.0",
-            body: "Canonical Python implementation: solver, examples, benchmarks, full mathematical writeup.",
+            body: "Canonical Python implementation: solver, compiled C++ backend (HLS-compatible for FPGA deployment), examples, benchmarks, full mathematical writeup.",
             external: true,
           },
         ].map((c) => (
@@ -249,6 +249,39 @@ import HeroSchematic from "../components/HeroSchematic.astro";
 
     <Flourish />
 
+    <!-- ─────── Install ─────── -->
+    <section class="py-10">
+      <div class="grid lg:grid-cols-[1fr_3fr] gap-8 mb-10">
+        <div>
+          <p class="eyebrow mb-3">Install</p>
+          <h2 class="text-3xl -tracking-[0.014em]"
+              style="font-family: var(--font-display); font-variation-settings: 'opsz' 60; font-weight: 500;">
+            Two lines<br/>and you're in.
+          </h2>
+        </div>
+        <p class="text-[--color-muted] text-lg leading-[1.55] self-end max-w-xl"
+           style="font-variation-settings: 'opsz' 22;">
+          Prebuilt wheels for Linux (x86_64, aarch64), macOS (Apple Silicon),
+          and Windows across CPython 3.9–3.13. The compiled C++ backend ships
+          inside the wheel; no toolchain needed on your side.
+        </p>
+      </div>
+
+      <pre data-language="bash"><code>pip install snn-opt</code></pre>
+
+      <p class="mt-6 text-[--color-muted] leading-[1.65] max-w-2xl">
+        Then head to the <a href="/tutorials/quickstart">Quickstart</a> for a
+        five-minute walkthrough. The PyPI distribution name is
+        <code>snn-opt</code> (hyphenated, per PEP 503); the Python import
+        name is <code>snn_opt</code>. Pick the C++ kernel with
+        <code>backend='c'</code> for a roughly 10× speedup on the inner
+        projection loop &mdash; the same kernel source is HLS-compatible and
+        is the basis for the planned FPGA deployment.
+      </p>
+    </section>
+
+    <Flourish />
+
     <!-- ─────── For whom ─────── -->
     <section class="py-10 lg:py-16">
       <div class="max-w-3xl">
@@ -269,6 +302,32 @@ import HeroSchematic from "../components/HeroSchematic.astro";
           — it has the full theory document, an academic-style README, and
           a benchmark suite. The pages here are the
           <em>friendly</em> version of the same material.
+        </p>
+      </div>
+    </section>
+
+    <Flourish />
+
+    <!-- ─────── Acknowledgments ─────── -->
+    <section class="py-10 lg:py-14">
+      <div class="max-w-3xl">
+        <p class="eyebrow mb-4">Acknowledgments</p>
+        <h2 class="text-3xl mb-6 -tracking-[0.014em]"
+            style="font-family: var(--font-display); font-variation-settings: 'opsz' 60; font-weight: 500;">
+          Acknowledgments.
+        </h2>
+        <p class="text-[--color-fg] text-lg mb-5 leading-[1.6]">
+          Developed at the <strong>School of Artificial Intelligence, Taizhou University</strong>.
+        </p>
+        <p class="text-[--color-muted] leading-[1.65]">
+          This codebase implements the SNN-QP research program led by
+          <strong>Prof. Shuai Li</strong> (IEEE Fellow; Faculty of Information
+          Technology and Electrical Engineering, University of Oulu, Finland),
+          whose work on neurodynamic optimization originated this line of
+          inquiry. The mathematical framework follows Mancoo, Boerlin and Machens
+          (<a href="https://papers.nips.cc/paper/2020/hash/64714a86909d401f8feb83e8c2d94b23-Abstract.html">NeurIPS 2020</a>)
+          and the broader projection-neural-network lineage (Hopfield–Tank,
+          Kennedy–Chua, Xia–Wang, Liu–Wang).
         </p>
       </div>
     </section>

@@ -9,16 +9,33 @@ lede: "From `pip install` to a solved QP in under five minutes. No prior backgro
 
 ## Install
 
-`snn_opt` is a small package — only NumPy and SciPy are required.
+`snn_opt` is on PyPI. Wheels ship for Linux (x86_64, aarch64), macOS (Apple Silicon), and Windows across CPython 3.9–3.13, with a compiled C++ kernel pre-built. No compiler needed on your side.
+
+```bash
+pip install snn-opt                  # core
+pip install "snn-opt[examples]"      # also matplotlib, for the figures
+```
+
+> The PyPI distribution name is `snn-opt` (hyphenated, lowercase, per PEP 503); the Python import name is `snn_opt`. So you `pip install snn-opt` and then `import snn_opt`.
+
+Only NumPy and SciPy are required at runtime.
+
+### Developer install
+
+For a checkout that lets you edit the source:
 
 ```bash
 git clone https://github.com/ahkhan03/SNN_opt.git
 cd SNN_opt
-pip install -e .                  # core
-pip install -e ".[examples]"      # also matplotlib, for the figures
+pip install -e .                     # editable
+pip install -e ".[examples]"         # + matplotlib for the figures
 ```
 
-You can also use it without installing — every script in the repo bootstraps `src/` into `sys.path` automatically.
+For a specific commit (reproducibility for papers):
+
+```bash
+pip install "git+https://github.com/ahkhan03/SNN_opt.git@<commit-sha>"
+```
 
 ## Your first QP
 
@@ -49,6 +66,17 @@ print("f* =", result.final_objective)
 ```
 
 Run it. You should see an answer very close to $x^\star = (0, 0)$ with `f* ≈ 0`, plus a one-line-per-stat summary including the iteration count and the number of projection events.
+
+## Compiled C++ backend
+
+The PyPI wheels include a compiled kernel (`snn_opt._kernel`, built via pybind11) that accelerates the inner adaptive-projection loop by roughly an order of magnitude. Opt in with the `backend` keyword:
+
+```python
+result = solve_qp(A, b, C, d, x0, backend='c')        # compiled kernel
+result = solve_qp(A, b, C, d, x0, backend='python')   # reference (default)
+```
+
+Both backends are kept in lockstep by a parity test suite that asserts they agree on every iteration. The C kernel supports dense problems with `projection_method='adaptive'`; sparse and non-adaptive paths transparently use Python. The same kernel source is HLS-compatible and is the basis for the planned FPGA deployment track.
 
 ## What the result tells you
 
