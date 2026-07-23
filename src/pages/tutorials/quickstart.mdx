@@ -1,6 +1,6 @@
 ---
 layout: ../../layouts/Prose.astro
-title: "Quickstart — snn_opt"
+title: "Quickstart: snn_opt"
 description: "Install snn_opt, solve your first QP in five lines of Python."
 eyebrow: "Tutorial 01 · 5 min"
 heading: "Quickstart."
@@ -76,7 +76,7 @@ result = solve_qp(A, b, C, d, x0, backend='c')        # compiled kernel
 result = solve_qp(A, b, C, d, x0, backend='python')   # reference (default)
 ```
 
-Both backends are kept in lockstep by a parity test suite that asserts they agree on every iteration. The C kernel supports dense problems with `projection_method='adaptive'`; sparse and non-adaptive paths transparently use Python. The same kernel source is HLS-compatible and is the basis for the planned FPGA deployment track.
+Both backends are kept in lockstep by a parity test suite. The C kernel supports dense problems with `projection_method='adaptive'`; sparse and non-adaptive paths transparently use Python. The same kernel source is HLS-compatible and is the basis for the planned FPGA deployment track.
 
 ## What the result tells you
 
@@ -97,10 +97,26 @@ result.spike_constraints      # which constraint(s) fired each time
 result.spike_norms            # how big each spike was
 ```
 
-The last four fields are the raw material for the *spike raster* you'll see throughout this site — they're how you learn what your solver is doing.
+The last four fields are the raw material for the *spike raster* you'll see throughout this site; they're how you learn what your solver is doing.
+
+## Checking the answer
+
+`converged` says the network reached a fixed point. It does not say that fixed point solves your QP. Since v0.5.0 three more fields answer that question, and they are the ones to check before trusting a result:
+
+```python
+result.joint_feasible             # rows AND bounds feasible together
+result.stationarity_residual      # KKT certificate at the final point
+result.projection_budget_exhausted
+```
+
+- **`joint_feasible`** is the honest feasibility flag. Before v0.5.0 the convergence test looked at the rows of `C` only, so a bound violation could not fail it.
+- **`stationarity_residual`** measures how far the final point is from satisfying the KKT conditions. A run that reports `converged=True` alongside a large residual has settled somewhere that is stable for the dynamics but is not an optimum.
+- **`projection_budget_exhausted`** means the inner projection sweep hit its watchdog. The solve aborts rather than returning a knowingly infeasible point as a success.
+
+If the residual is larger than you want, lower `k0_scale` **and** raise `max_iterations` together. The [accuracy figure](/) on the home page shows why changing only one of them can make things worse.
 
 ## Next
 
-- [**An SVM is a QP**](/tutorials/svm-as-qp) — turn a real machine-learning problem into something `solve_qp` can take.
-- [**Reading the spike raster**](/tutorials/spike-raster) — interpret the spike-time outputs above as a diagnostic plot.
-- See [`examples/`](https://github.com/ahkhan03/SNN_opt/tree/main/examples) in the repo for nine more worked QPs — 3-D polytopes, infeasible recovery, equality constraints, warm starting, and a full SVM.
+- [**An SVM is a QP**](/tutorials/svm-as-qp): turn a real machine-learning problem into something `solve_qp` can take.
+- [**Reading the spike raster**](/tutorials/spike-raster): interpret the spike-time outputs above as a diagnostic plot.
+- See [`examples/`](https://github.com/ahkhan03/SNN_opt/tree/main/examples) in the repo for nine more worked QPs: 3-D polytopes, infeasible recovery, equality constraints, warm starting, and a full SVM.

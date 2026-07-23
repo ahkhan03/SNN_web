@@ -1,6 +1,6 @@
 ---
 layout: ../../layouts/Prose.astro
-title: "Tutorial — An SVM is a QP"
+title: "Tutorial: An SVM is a QP"
 description: "Turn a textbook SVM dual into a problem snn_opt can take, end to end."
 eyebrow: "Tutorial 02 · 15 min"
 heading: "An SVM is a QP."
@@ -33,7 +33,13 @@ $$
 \quad\text{s.t.}\quad 0 \le \alpha \le C,\ \ y^\top \alpha = 0.
 $$
 
-The box constraint is handled by `lower_bound=0.0, upper_bound=C` in `SolverConfig` — `snn_opt` clips them in-place rather than treating them as inequalities, which is more stable. The equality $y^\top \alpha = 0$ is encoded as the inequality pair $\pm y^\top \alpha \le \varepsilon$ for a small slack $\varepsilon$.
+The box constraint is handled by `lower_bound=0.0, upper_bound=C` in `SolverConfig`, and the equality $y^\top \alpha = 0$ is encoded as the inequality pair $\pm y^\top \alpha \le \varepsilon$ for a small slack $\varepsilon$.
+
+<aside>
+
+**Use v0.5.0 or later for this problem.** Before v0.5.0 the bounds were enforced by a terminal clip applied *after* the inequality projection, with nothing re-projecting behind it. Clipping onto the box after projecting onto a halfspace is not a projection onto their intersection, and the SVM dual is the worst case for it: the box and the equality are *both* active at the solution, so the two corrections fight and the solve can stall at a point feasible for neither, reporting an objective that undercuts the true optimum. Since v0.5.0 the bounds are facets of the same projection sweep. Check `result.joint_feasible`, not the row-only violation.
+
+</aside>
 
 ## End-to-end code
 
@@ -78,7 +84,7 @@ print(f"snn_opt objective: {0.5 * alpha @ A @ alpha + b @ alpha:.4f}")
 print(f"sklearn objective: {0.5 * sk_alpha @ A @ sk_alpha + b @ sk_alpha:.4f}")
 ```
 
-On any sensible dataset the two objectives match to 3-4 decimal places. The `snn_opt` solution will have a slightly different *active set* — the spike raster will tell you which support vectors fired and how often.
+On any sensible dataset the two objectives match to 3-4 decimal places. The `snn_opt` solution will have a slightly different *active set*, and the spike raster will tell you which support vectors fired and how often. Before trusting the numbers, confirm `result.joint_feasible` is `True` and glance at `result.stationarity_residual`.
 
 ## Why bother?
 
@@ -86,10 +92,10 @@ You wouldn't replace `sklearn.svm.SVC` with this in production. The point of the
 
 - **Pedagogy.** The translation makes the QP-ness of SVM concrete.
 - **Diagnostics.** The spike raster shows the active-set evolution explicitly. `sklearn` hides this.
-- **Composability.** Once SVM is a QP, you can mix it with other QP-shaped things — kernel regression, structured-output methods, your own custom losses — all in the same solver.
+- **Composability.** Once SVM is a QP, you can mix it with other QP-shaped things (kernel regression, structured-output methods, your own custom losses) all in the same solver.
 - **Hardware.** The same dynamics run on neuromorphic hardware. The classical solver doesn't.
 
 ## Next
 
-- [**Reading the spike raster**](/tutorials/spike-raster) — turn `result.spike_*` arrays into a useful debugging plot.
-- [`examples/example7_svm_dual.py`](https://github.com/ahkhan03/SNN_opt/blob/main/examples/example7_svm_dual.py) — a more complete and configurable version of the code above.
+- [**Reading the spike raster**](/tutorials/spike-raster): turn `result.spike_*` arrays into a useful debugging plot.
+- [`examples/example7_svm_dual.py`](https://github.com/ahkhan03/SNN_opt/blob/main/examples/example7_svm_dual.py): a more complete and configurable version of the code above.
