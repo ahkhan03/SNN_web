@@ -208,12 +208,13 @@ import HeroSchematic from "../components/HeroSchematic.astro";
       </figure>
 
       <p class="mt-6 text-[--color-muted] leading-[1.65] max-w-2xl">
-        Three fields on the result exist to make this visible, and they are
-        worth checking on any real problem. <code>joint_feasible</code> reports
+        Three fields on the result expose different parts of the answer, and
+        they are worth checking on any real problem. <code>joint_feasible</code> reports
         feasibility of the constraint rows <em>and</em> the bounds together.
-        <code>stationarity_residual</code> is a KKT certificate: where
-        <code>converged</code> tells you the network reached a fixed point, this
-        tells you how far that fixed point sits from an actual optimum.
+        <code>stationarity_residual</code> is a scale-dependent eps-KKT
+        diagnostic: where <code>converged</code> tells you the network reached
+        its fixed-point criteria, this estimates the remaining stationarity,
+        complementarity, and primal defect.
         <code>projection_budget_exhausted</code> flags a solve that ran out of
         inner projection steps, which now aborts rather than being reported as
         success. The <a href="https://github.com/ahkhan03/SNN_opt#accuracy-and-tuning">repository README</a>

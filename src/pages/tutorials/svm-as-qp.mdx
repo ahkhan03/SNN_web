@@ -84,7 +84,7 @@ print(f"snn_opt objective: {0.5 * alpha @ A @ alpha + b @ alpha:.4f}")
 print(f"sklearn objective: {0.5 * sk_alpha @ A @ sk_alpha + b @ sk_alpha:.4f}")
 ```
 
-On any sensible dataset the two objectives match to 3-4 decimal places. The `snn_opt` solution will have a slightly different *active set*, and the spike raster will tell you which support vectors fired and how often. Before trusting the numbers, confirm `result.joint_feasible` is `True` and glance at `result.stationarity_residual`.
+On any sensible dataset the two objectives match to 3-4 decimal places. The `snn_opt` solution will have a slightly different *active set*, and the spike raster will tell you which support vectors fired and how often. Before comparing the numbers, confirm `result.joint_feasible` is `True`, check that `result.projection_budget_exhausted` is `False`, and use `result.stationarity_residual` as a scale-aware eps-KKT diagnostic.
 
 ## Why bother?
 

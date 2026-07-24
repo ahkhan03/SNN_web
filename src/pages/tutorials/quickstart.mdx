@@ -101,16 +101,16 @@ The last four fields are the raw material for the *spike raster* you'll see thro
 
 ## Checking the answer
 
-`converged` says the network reached a fixed point. It does not say that fixed point solves your QP. Since v0.5.0 three more fields answer that question, and they are the ones to check before trusting a result:
+`converged` says the network reached a fixed point. It does not say that fixed point solves your QP. Since v0.5.0 three more fields separate feasibility, optimality diagnostics, and projection termination:
 
 ```python
 result.joint_feasible             # rows AND bounds feasible together
-result.stationarity_residual      # KKT certificate at the final point
+result.stationarity_residual      # eps-KKT diagnostic at the final point
 result.projection_budget_exhausted
 ```
 
 - **`joint_feasible`** is the honest feasibility flag. Before v0.5.0 the convergence test looked at the rows of `C` only, so a bound violation could not fail it.
-- **`stationarity_residual`** measures how far the final point is from satisfying the KKT conditions. A run that reports `converged=True` alongside a large residual has settled somewhere that is stable for the dynamics but is not an optimum.
+- **`stationarity_residual`** estimates the maximum stationarity, complementarity, and primal defect on a `k0`-scaled active set. Its magnitude depends on the problem scale, so use tolerances meaningful for your QP and compare it across `k0` settings rather than treating one threshold as a universal trust verdict.
 - **`projection_budget_exhausted`** means the inner projection sweep hit its watchdog. The solve aborts rather than returning a knowingly infeasible point as a success.
 
 If the residual is larger than you want, lower `k0_scale` **and** raise `max_iterations` together. The [accuracy figure](/) on the home page shows why changing only one of them can make things worse.
