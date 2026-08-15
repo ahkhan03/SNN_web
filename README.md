@@ -40,9 +40,8 @@ output directory `dist/`. The site is reachable (after CF setup) at
 ```
 src/
 ├── components/   # Reusable Astro components
-├── content/      # MDX content collections (tutorials, posts)
-├── layouts/      # Page layouts (Base.astro and friends)
-├── pages/        # File-based routes
+├── layouts/      # Page layouts (Base.astro, Prose.astro)
+├── pages/        # File-based routes (tutorials are MDX pages)
 └── styles/       # global.css (Tailwind + KaTeX + design-system vars)
 public/
 └── figures/      # Static images, including those mirrored from snn_opt

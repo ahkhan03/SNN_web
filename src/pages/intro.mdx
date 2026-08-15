@@ -42,14 +42,14 @@ $$
 
 where $s(t)$ is a sum of delta functions, the spike train. The threshold-crossings of the LIF model and the constraint-violations of the optimizer are *the same event*, viewed from two angles. Each spike is a primal-dual update.
 
-This isn't a metaphor. It's a literal equivalence first formalized by Mancoo, Boerlin and Machens at NeurIPS 2020, and the [`snn_opt`](https://github.com/ahkhan03/SNN_opt) library is a clean Python implementation of the discretized version.
+This isn't a metaphor. It's a literal equivalence first formalized by Mancoo, Keemink and Machens at NeurIPS 2020, and the [`snn_opt`](https://github.com/ahkhan03/SNN_opt) library is a clean Python implementation of the discretized version.
 
 ## What does this buy us?
 
 Three useful things:
 
 - **A new way to think about classical solvers.** Many things you already know (projected gradient methods, primal-dual algorithms, active-set methods) fall out as discretizations of this single dynamic. The spike raster is a diagnostic that doesn't exist in their classical form.
-- **Hardware naturalness.** The primitives are matrix-vector multiplies, comparisons, and resets. Those are exactly the operations digital neuromorphic chips are good at (Loihi, SpiNNaker, TrueNorth).
+- **Hardware naturalness.** The primitives are matrix-vector multiplies, comparisons, and resets. Those are exactly the operations digital neuromorphic chips (Loihi, SpiNNaker, TrueNorth) and FPGA fabric are good at; the `snn_opt` repository ships a physically qualified Kria KV260 reference implementation.
 - **A unifying lens for ML.** A surprising number of classical machine-learning problems can be cast as constrained QPs and solved by exactly the same dynamics. Portfolio optimization is the worked example in the [published paper](/papers/); a broader series of such reductions is in progress.
 
 ## Where to go next

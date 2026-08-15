@@ -76,7 +76,7 @@ result = solve_qp(A, b, C, d, x0, backend='c')        # compiled kernel
 result = solve_qp(A, b, C, d, x0, backend='python')   # reference (default)
 ```
 
-Both backends are kept in lockstep by a parity test suite. The C kernel supports dense problems with `projection_method='adaptive'`; sparse and non-adaptive paths transparently use Python. The same kernel source is HLS-compatible and is the basis for the planned FPGA deployment track.
+Both backends are kept in lockstep by a parity test suite. The C kernel supports dense problems with `projection_method='adaptive'`; sparse inputs and other projection methods are rejected with a clear error rather than silently falling back, so stick with `backend='python'` for those. Convergence is decided by the same host-side certificate on every backend, so `converged` means one thing everywhere. The same kernel source is HLS-compatible, and the repository ships a physically qualified Kria KV260 FPGA reference under `fpga/`.
 
 ## What the result tells you
 
@@ -101,19 +101,19 @@ The last four fields are the raw material for the *spike raster* you'll see thro
 
 ## Checking the answer
 
-`converged` says the network reached a fixed point. It does not say that fixed point solves your QP. Since v0.5.0 three more fields separate feasibility, optimality diagnostics, and projection termination:
+Since v0.6.0, `converged=True` is a **scale-invariant KKT certificate**: it means the final point passed a KKT-cone test relative to the problem's own gradient scale, together with joint feasibility and a plateau check, at three consecutive checkpoints. Three fields carry the detail:
 
 ```python
 result.joint_feasible             # rows AND bounds feasible together
-result.stationarity_residual      # eps-KKT diagnostic at the final point
+result.kkt_residual               # KKT certificate residual
 result.projection_budget_exhausted
 ```
 
 - **`joint_feasible`** is the honest feasibility flag. Before v0.5.0 the convergence test looked at the rows of `C` only, so a bound violation could not fail it.
-- **`stationarity_residual`** estimates the maximum stationarity, complementarity, and primal defect on a `k0`-scaled active set. Its magnitude depends on the problem scale, so use tolerances meaningful for your QP and compare it across `k0` settings rather than treating one threshold as a universal trust verdict.
+- **`kkt_residual`** is the certificate itself: a nonnegative least-squares fit of the gradient onto the cone of facet normals, with a complementarity guard so slack facets cannot absorb the gradient. It is accepted *relative to the problem's own gradient scale* (`kkt_scale`), so the decision is invariant under objective rescaling, constraint row order, and per-row scaling; read `kkt_residual / kkt_scale` as the cross-problem comparable defect. The pre-0.6 test compared an *absolute* projected-gradient norm against `1e-6` and could never fire on large-scale problems; if you need it, it survives as `optimality_test="legacy_projected_gradient"`.
 - **`projection_budget_exhausted`** means the inner projection sweep hit its watchdog. The solve aborts rather than returning a knowingly infeasible point as a success.
 
-If the residual is larger than you want, lower `k0_scale` **and** raise `max_iterations` together. The [accuracy figure](/) on the home page shows why changing only one of them can make things worse.
+If `converged` stays `False` on a problem you believe in, the certificate may simply be measuring the accuracy floor of the default step size honestly. Lower `k0_scale` **and** raise `max_iterations` together to shrink the floor, or loosen `kkt_rel_tol` if the default `1e-4` is tighter than you need. The [accuracy figure](/) on the home page shows why the two knobs have to move together.
 
 ## Next
 
